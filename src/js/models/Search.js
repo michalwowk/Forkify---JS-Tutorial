@@ -12,7 +12,7 @@ export default class Search {
       const result = await axios(
         `${proxy}https://www.food2fork.com/api/search?key=${APIkey}&q=${this.query}`
       );
-      this.result = result.data.recipes;
+      this.results = result.data.recipes;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
