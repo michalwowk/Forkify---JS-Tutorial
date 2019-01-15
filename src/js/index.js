@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import { elements, renderLoader, clearLoader } from './views/base';
 
 /**
@@ -33,6 +34,7 @@ const controlSearch = async () => {
       clearLoader();
       searchView.renderResults(state.search.results);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log('Smth wrong with the search...');
       clearLoader();
     }
@@ -59,26 +61,29 @@ elements.searchResultPages.addEventListener('click', e => {
 
 const controlRecipe = async () => {
   const id = window.location.hash.replace('#', '');
+  // eslint-disable-next-line no-console
+  console.log(id);
 
   if (id) {
-    // Create new recipe object
-    console.log(id);
-    state.recipe = new Recipe(id);
+    // Prepare UI for changes
+    recipeView.clearRecipe();
+    renderLoader(elements.recipe);
 
-    window.s = state;
-    window.r = state.recipe;
+    // Create new recipe object
+    state.recipe = new Recipe(id);
 
     // Get recipe data
     try {
       await state.recipe.getRecipe();
+      state.recipe.parseIngredients();
 
       // Calculate servings and time
-      // state.recipe.calcTime();
-      // state.recipe.calcServings();
+      state.recipe.calcTime();
+      state.recipe.calcServings();
 
-      // render
-
-      console.log(state.recipe);
+      // // Render recipe
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log('error processiong recipe !');
