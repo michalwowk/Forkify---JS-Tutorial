@@ -1,7 +1,30 @@
+import { Fraction } from 'fractional';
 import { elements } from './base';
 
 export const clearRecipe = () => {
   elements.recipe.innerHTML = '';
+};
+
+const formatCount = count => {
+  if (count) {
+    // count = 2.5 --> 2 1/2
+    // count = 0.5 --> 1/2
+
+    const [int, dec] = count
+      .toString() // create string from number
+      .split('.') // split string to array
+      .map(el => parseInt(el, 10)); // change array element to numbers again
+
+    if (!dec) return count;
+
+    if (int === 0) {
+      const fr = new Fraction(count);
+      return `${fr.numerator}/${fr.denominator}`;
+    }
+    const fr = new Fraction(count - int);
+    return `${int} ${fr.numerator}/${fr.denominator}`;
+  }
+  return '?';
 };
 
 const createIngredient = ({ count, unit, ingredient }) => `
@@ -9,7 +32,7 @@ const createIngredient = ({ count, unit, ingredient }) => `
                         <svg class="recipe__icon">
                             <use href="img/icons.svg#icon-check"></use>
                         </svg>
-                        <div class="recipe__count">${count}</div>
+                        <div class="recipe__count">${formatCount(count)}</div>
                         <div class="recipe__ingredient">
                             <span class="recipe__unit">${unit}</span>
                             ${ingredient}
@@ -42,12 +65,12 @@ export const renderRecipe = ({ author, img, title, servings, time, url, ingredie
                     <span class="recipe__info-text"> servings</span>
 
                     <div class="recipe__info-buttons">
-                        <button class="btn-tiny">
+                        <button class="btn-tiny btn-decrease">
                             <svg>
                                 <use href="img/icons.svg#icon-circle-with-minus"></use>
                             </svg>
                         </button>
-                        <button class="btn-tiny">
+                        <button class="btn-tiny btn-increase">
                             <svg>
                                 <use href="img/icons.svg#icon-circle-with-plus"></use>
                             </svg>
@@ -93,4 +116,15 @@ export const renderRecipe = ({ author, img, title, servings, time, url, ingredie
             </div>
     `;
   elements.recipe.insertAdjacentHTML('afterbegin', markup);
+};
+
+export const updateServingsIngredients = recipe => {
+  // Update servings
+  document.querySelector('.recipe__info-data--people').textContent = recipe.servings;
+  // Update ingredients
+  const countElements = document.querySelectorAll('.recipe__count');
+  countElements.forEach((el, i) => {
+    // eslint-disable-next-line no-param-reassign
+    el.textContent = formatCount(recipe.ingredients[i].count);
+  });
 };
