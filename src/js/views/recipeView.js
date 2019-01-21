@@ -7,22 +7,23 @@ export const clearRecipe = () => {
 
 const formatCount = count => {
   if (count) {
-    // count = 2.5 --> 2 1/2
+    // count = 2.5 --> 5/2 --> 2 1/2
     // count = 0.5 --> 1/2
+    const newCount = Math.round(count * 10000) / 10000;
+    const [int, dec] = newCount
+      .toString()
+      .split('.')
+      .map(el => parseInt(el, 10));
 
-    const [int, dec] = count
-      .toString() // create string from number
-      .split('.') // split string to array
-      .map(el => parseInt(el, 10)); // change array element to numbers again
-
-    if (!dec) return count;
+    if (!dec) return newCount;
 
     if (int === 0) {
-      const fr = new Fraction(count);
+      const fr = new Fraction(newCount);
       return `${fr.numerator}/${fr.denominator}`;
-    }
-    const fr = new Fraction(count - int);
-    return `${int} ${fr.numerator}/${fr.denominator}`;
+    } 
+      const fr = new Fraction(newCount - int);
+      return `${int} ${fr.numerator}/${fr.denominator}`;
+    
   }
   return '?';
 };
