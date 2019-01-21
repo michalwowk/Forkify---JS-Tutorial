@@ -20,10 +20,9 @@ const formatCount = count => {
     if (int === 0) {
       const fr = new Fraction(newCount);
       return `${fr.numerator}/${fr.denominator}`;
-    } 
-      const fr = new Fraction(newCount - int);
-      return `${int} ${fr.numerator}/${fr.denominator}`;
-    
+    }
+    const fr = new Fraction(newCount - int);
+    return `${int} ${fr.numerator}/${fr.denominator}`;
   }
   return '?';
 };
@@ -93,7 +92,7 @@ export const renderRecipe = ({ author, img, title, servings, time, url, ingredie
                  ${ingredients.map(el => createIngredient(el)).join('')}
                 </ul>
 
-                <button class="btn-small recipe__btn">
+                <button class="btn-small recipe__btn recipe__btn--add">
                     <svg class="search__icon">
                         <use href="img/icons.svg#icon-shopping-cart"></use>
                     </svg>
